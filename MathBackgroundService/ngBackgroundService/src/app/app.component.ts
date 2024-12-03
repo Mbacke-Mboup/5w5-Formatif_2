@@ -111,6 +111,22 @@ export class AppComponent {
       });
     });
 
+    this.hubConnection.on('GoodAnswer', (choiceIndex:number) => {
+      
+          alert("Bonne Réponse!")
+          console.log("vbr");
+          
+       
+    });
+
+    this.hubConnection.on('BadAnswer', (goodAnswer:number) => {
+      
+         alert("Mauvaise Réponse! la réponse était "+goodAnswer)
+         console.log("vbrss");
+
+     
+    });
+
     this.hubConnection
       .start()
       .then(() => {

@@ -45,5 +45,9 @@ namespace BackgroundServiceVote.Hubs
         {
             _matchBackgroundService.SelectChoice(Context.UserIdentifier!, asnwerIndex);
         }
+
+        
+
+
     }
 }

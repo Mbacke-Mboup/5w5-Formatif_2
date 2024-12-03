@@ -1,4 +1,5 @@
-﻿using BackgroundServiceVote.Hubs;
+﻿using BackgroundServiceVote.Data;
+using BackgroundServiceVote.Hubs;
 using BackgroundServiceVote.Models;
 using Microsoft.AspNetCore.SignalR;
 
@@ -23,11 +24,13 @@ namespace BackgroundServiceVote.Services
         public MathQuestion? CurrentQuestion => _currentQuestion;
 
         private MathQuestionsService _mathQuestionsService;
+        private BackgroundServiceContext _bd;
 
-        public MathBackgroundService(IHubContext<MathQuestionsHub> mathQuestionHub, MathQuestionsService mathQuestionsService)
+        public MathBackgroundService(IHubContext<MathQuestionsHub> mathQuestionHub, MathQuestionsService mathQuestionsService, BackgroundServiceContext bd)
         {
             _mathQuestionHub = mathQuestionHub;
             _mathQuestionsService = mathQuestionsService;
+            _bd = bd;
         }
 
         public void AddUser(string userId)
@@ -78,9 +81,12 @@ namespace BackgroundServiceVote.Services
                 if (userData.Choice == _currentQuestion!.RightAnswerIndex)
                 {
 
+                    _mathQuestionHub.Clients.User(userId).SendAsync("GoodAnswer");
                 }
                 else
                 {
+                    _mathQuestionHub.Clients.User(userId).SendAsync("BadAnswer", _currentQuestion.Answers[_currentQuestion.RightAnswerIndex]);
+
                 }
 
             }
@@ -112,5 +118,6 @@ namespace BackgroundServiceVote.Services
                 await Task.Delay(DELAY, stoppingToken);
             }
         }
+
     }
 }
